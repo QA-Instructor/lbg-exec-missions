@@ -1,0 +1,3 @@
+sudo docker run -d -p 3306:3306 --name yourfirstname-sql-1 -v /mysql_data:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=secretsecret -e MYSQL_DATABASE=testdb mysql:8
+
+sudo docker run -d -p 3306:3306 --name bob-sql-1 -v /mysql_data:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=secretsecret -e MYSQL_DATABASE=testdb mysql:8
