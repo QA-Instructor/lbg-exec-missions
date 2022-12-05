@@ -4,7 +4,7 @@ You need to create a service account key in the GCP Project
 
 Go to:
 
-IAM & Admin -> Service Accounts -> Compute Engine default service account -> Keys -> ADD KEY 
+**IAM & Admin -> Service Accounts -> Compute Engine default service account -> Keys -> ADD KEY -> Create New Key**
 
 Ensure it is a **JSON** key 
 
