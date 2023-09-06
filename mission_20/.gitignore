@@ -1,4 +1,5 @@
-exec-labs-and-demos-050cf0c90dc4.json
+exec*.json
 .terraform
 terraform.tfstate
 terraform.tfstate.backup
+.terraform**

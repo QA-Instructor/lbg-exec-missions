@@ -8,9 +8,9 @@ terraform {
 }
 
 provider "google" {
-  credentials = file("exec-labs-and-demos-050cf0c90dc4.json")
+  credentials = file("exec-cohort-X-newkey.json")
 
-  project = "exec-labs-and-demos"
+  project = "exec-cohort-4"
   region  = "europe-west1"
   zone    = "europe-west1-c"
 }
@@ -28,7 +28,7 @@ resource "google_compute_subnetwork" "default" {
 }
 
 resource "google_compute_instance" "executive_vm" {
-  count        = 1
+  count        = 9
 
   name         = "executive-${count.index + 1}"
   machine_type = "e2-medium"
