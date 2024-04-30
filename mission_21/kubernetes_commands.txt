@@ -1,0 +1,97 @@
+kubectl get service --namespace=lbg-X
+
+kubectl rollout status deployment -n=lbg-X lbgcalc
+
+kubectl get deployment -n=lbg-X 
+
+kubectl get pods -n=lbg-X 
+
+kubectl get pods -n=lbg-X  -o wide
+
+kubectl get pods --field-selector=status.phase==Running -n=lbg-trainer -o wide
+
+kubectl get rs -n=lbg-X
+
+kubectl rollout history deployment lbgcalc -n=lbg-X
+
+kubectl get nodes
+
+kubectl rollout history deployment lbgcalc -n=lbg-trainer
+
+kubectl get rs -n=lbg-trainer
+
+kubectl get pods --field-selector=status.phase==Running -n=lbg-trainer -o wide
+
+kubectl get nodes
+
+kubectl get pods --field-selector=status.phase==Running -n=lbg-trainer -o wide
+
+kubectl get rs -n=lbg-trainer
+# -----------------------------------------------------------------------------------
+
+# Tidy Up
+
+kubectl get deployment -n=lbg-X
+
+kubectl get deployment -n=lbg-X -o wide
+
+kubectl delete deployment -n=lbg-X lbgcalc
+
+kubectl get service -n=lbg-X -o wide
+
+kubectl delete service -n=lbg-X lbgcalc
+
+kubectl get deployment -n=lbg-X -o wide
+
+kubectl get service -n=lbg-X -o wide
+
+kubectl get pods -n=lbg-X -o wide
+
+kubectl get rs -n=lbg-X -o wide
+
+kubectl get all -n=lbg-X
+
+kubectl get nodes
+
+# ----------------------------------------------------------------------------------
+
+# Instructor Only
+
+# Confirm no deployments have been left active
+for n in $(kubectl get ns --no-headers -o custom-columns=":metadata.name" | grep lbg*); do kubectl get deploy lbgcalc -n=$n; done
+
+# Delete any remaining deplyments
+for n in $(kubectl get ns --no-headers -o custom-columns=":metadata.name" | grep lbg*); do kubectl delete deploy lbgcalc -n=$n; done
+
+# Confirm no services have been left active
+for n in $(kubectl get ns --no-headers -o custom-columns=":metadata.name" | grep lbg*); do kubectl get svc lbgcalc -n=$n; done
+
+# Delete any remaining services
+for n in $(kubectl get ns --no-headers -o custom-columns=":metadata.name" | grep lbg*); do kubectl delete svc lbgcalc -n=$n; done
+
+# Confirm the namespaces are empty
+for n in $(kubectl get ns --no-headers -o custom-columns=":metadata.name" | grep lbg*); do kubectl get all -n=$n; done
+
+# Do a Terraform DELETE
+
+# If namespaces fail to be deleted:
+# Get the namesapces
+for n in $(kubectl get ns --no-headers -o custom-columns=":metadata.name" | grep lbg*); do kubectl get ns $n; done
+
+# Attempt to delete the namespaces
+for n in $(kubectl get ns --no-headers -o custom-columns=":metadata.name" | grep lbg*); do kubectl delete ns $n; done
+
+# If the namespaces are stuck in a Terminating state, it is often to do with incorrect finalization. Patch the namespaces:
+for n in $(kubectl get ns --no-headers -o custom-columns=":metadata.name" | grep lbg*); do kubectl patch ns $n -p '{"metadata":{"finalizers":null}}'; done
+
+# If the above fails - force delete the namespaces that are stuck in a Terminating state one by one
+(
+NAMESPACE=your-rogue-namespace
+kubectl proxy &
+kubectl get namespace $NAMESPACE -o json |jq '.spec = {"finalizers":[]}' >temp.json
+curl -k -H "Content-Type: application/json" -X PUT --data-binary @temp.json 127.0.0.1:8001/api/v1/namespaces/$NAMESPACE/finalize
+)
+
+
+
+
