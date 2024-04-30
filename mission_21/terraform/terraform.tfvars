@@ -1,3 +1,3 @@
-projectid = "exec-cohort-7"
-credentialfile = "exec-cohort-7-newkey.json"
-delegatecount = 2
+projectid = "lbg-mea-leaders-cX"
+credentialfile = "lbg-mea-leaders-cX-keyid.json"
+delegatecount = 14
