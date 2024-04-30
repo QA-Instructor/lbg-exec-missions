@@ -14,7 +14,7 @@ variable "zone" {
 
 variable "maxnodecount" {
     type = number
-    default = 4
+    default = 8
 }
 
 variable "minnodecount" {
