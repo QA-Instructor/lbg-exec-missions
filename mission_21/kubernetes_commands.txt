@@ -84,13 +84,13 @@ for n in $(kubectl get ns --no-headers -o custom-columns=":metadata.name" | grep
 # If the namespaces are stuck in a Terminating state, it is often to do with incorrect finalization. Patch the namespaces:
 for n in $(kubectl get ns --no-headers -o custom-columns=":metadata.name" | grep lbg*); do kubectl patch ns $n -p '{"metadata":{"finalizers":null}}'; done
 
-# If the above fails - force delete the namespaces that are stuck in a Terminating state one by one
-(
-NAMESPACE=your-rogue-namespace
+# If the above fails - force delete the namespaces that are stuck in a Terminating state
+declare -a nss=$(kubectl get ns --no-headers -o custom-columns=":metadata.name" | grep lbg*)
+for ns in ${nss[@]}; do
 kubectl proxy &
-kubectl get namespace $NAMESPACE -o json |jq '.spec = {"finalizers":[]}' >temp.json
-curl -k -H "Content-Type: application/json" -X PUT --data-binary @temp.json 127.0.0.1:8001/api/v1/namespaces/$NAMESPACE/finalize
-)
+kubectl get namespace $ns -o json |jq '.spec = {"finalizers":[]}' >temp.json
+curl -k -H "Content-Type: application/json" -X PUT --data-binary @temp.json 127.0.0.1:8001/api/v1/namespaces/$ns/finalize
+done
 
 
 
