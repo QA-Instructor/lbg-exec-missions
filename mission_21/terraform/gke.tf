@@ -42,11 +42,7 @@ resource "kubernetes_namespace" "lbg-trainer" {
   metadata {
     name = "lbg-trainer"
   }
-
-  provisioner "local-exec" {
-    when = destroy
-    command = "nohup ${path.module}/namespace-finalizer.sh lbg-trainer 2>&1 &"
-  }
+  depends_on = [ google_container_node_pool.primary_nodes ]
 }
 
 resource "kubernetes_namespace" "lbg" {
@@ -54,9 +50,5 @@ resource "kubernetes_namespace" "lbg" {
   metadata {
     name = "lbg-${count.index + 1}"
   }
-
-  provisioner "local-exec" {
-    when = destroy
-    command = "nohup ${path.module}/namespace-finalizer.sh lbg-${count.index + 1} 2>&1 &"
-  }
+  depends_on = [ google_container_node_pool.primary_nodes ]
 }
