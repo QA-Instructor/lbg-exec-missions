@@ -42,6 +42,7 @@ resource "kubernetes_namespace" "lbg-trainer" {
   metadata {
     name = "lbg-trainer"
   }
+  depends_on = [ google_container_node_pool.primary_nodes ]
 }
 
 resource "kubernetes_namespace" "lbg" {
@@ -49,4 +50,5 @@ resource "kubernetes_namespace" "lbg" {
   metadata {
     name = "lbg-${count.index + 1}"
   }
+  depends_on = [ google_container_node_pool.primary_nodes ]
 }
